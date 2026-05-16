@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generador de Context Prompt · Trade Marketing</title>
+  <style>
+    :root {
+      --primary: #1e3a5f;
+      --primary-light: #2d5a8e;
+      --accent: #e8562a;
+      --bg: #f0f4f8;
+      --card-bg: #ffffff;
+      --text: #1a1a2e;
+      --text-muted: #6b7280;
+      --border: #e2e8f0;
+      --success: #10b981;
+      --shadow: 0 2px 12px rgba(0,0,0,0.08);
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 50%, #1a4a7a 100%);
+      color: white;
+      padding: 44px 24px 56px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: radial-gradient(circle at 65% 35%, rgba(232,86,42,0.18) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(232,86,42,0.9);
+      color: white;
+      font-size: 0.72rem;
+      padding: 4px 14px;
+      border-radius: 99px;
+      margin-bottom: 14px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      position: relative;
+    }
+    header h1 {
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      position: relative;
+    }
+    header .subtitle {
+      font-size: 1rem;
+      opacity: 0.82;
+      position: relative;
+    }
+
+    /* ── Main ── */
+    main {
+      max-width: 920px;
+      margin: -28px auto 100px;
+      padding: 0 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Accordion ── */
+    .accordion { display: flex; flex-direction: column; gap: 12px; }
+
+    .section-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      transition: box-shadow 0.2s;
+    }
+    .section-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.12); }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 20px;
+      cursor: pointer;
+      user-select: none;
+      background: white;
+      transition: background 0.15s;
+    }
+    .section-header:hover { background: #f8fafc; }
+
+    .section-icon {
+      width: 38px; height: 38px;
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.15rem;
+      flex-shrink: 0;
+    }
+    .section-title { flex: 1; }
+    .section-title h3 { font-size: 1rem; font-weight: 700; color: var(--primary); }
+    .section-title p { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+
+    .section-chevron {
+      color: var(--text-muted);
+      transition: transform 0.25s;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .section-card.open .section-chevron { transform: rotate(180deg); }
+
+    .section-body {
+      display: none;
+      padding: 4px 20px 22px;
+      border-top: 1px solid var(--border);
+    }
+    .section-card.open .section-body { display: block; }
+
+    /* ── Form elements ── */
+    .form-group { margin-top: 16px; }
+    .form-group label {
+      display: block;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .form-group label .optional {
+      font-weight: 400;
+      color: var(--text-muted);
+      font-size: 0.77rem;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-family: inherit;
+      color: var(--text);
+      background: white;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      outline: none;
+    }
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    textarea:focus {
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(45,90,142,0.12);
+    }
+    textarea { resize: vertical; min-height: 80px; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    /* ── Dynamic list ── */
+    .dynamic-list { display: flex; flex-direction: column; gap: 8px; }
+    .dynamic-item { display: flex; gap: 8px; align-items: center; }
+    .dynamic-item input { flex: 1; }
+
+    .btn-remove {
+      background: none;
+      border: 1.5px solid #fca5a5;
+      color: #ef4444;
+      border-radius: 6px;
+      width: 32px; height: 32px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.15s;
+      line-height: 1;
+    }
+    .btn-remove:hover { background: #fef2f2; }
+
+    .btn-add {
+      background: none;
+      border: 1.5px dashed var(--primary-light);
+      color: var(--primary);
+      border-radius: 8px;
+      padding: 8px 14px;
+      cursor: pointer;
+      font-size: 0.84rem;
+      font-weight: 600;
+      width: 100%;
+      margin-top: 8px;
+      transition: all 0.15s;
+    }
+    .btn-add:hover { background: #eff6ff; }
+
+    /* ── Role cards ── */
+    .role-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 10px;
+    }
+    .role-card {
+      padding: 14px 10px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+      font-size: 0.83rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+    .role-card:hover { border-color: var(--primary-light); color: var(--primary); background: #f8fafc; }
+    .role-card.selected {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, #fff5f2, #fff);
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .role-card .role-emoji { font-size: 1.6rem; display: block; margin-bottom: 6px; }
+
+    /* ── Pills ── */
+    .pills-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pill {
+      padding: 6px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 99px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: all 0.15s;
+    }
+    .pill:hover { border-color: var(--primary-light); color: var(--primary); }
+    .pill.selected { border-color: var(--primary); background: var(--primary); color: white; }
+
+    /* ── Checkboxes ── */
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 8px;
+    }
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-size: 0.86rem;
+    }
+    .checkbox-item:hover { border-color: var(--primary-light); background: #f8fafc; }
+    .checkbox-item input[type="checkbox"] {
+      width: 16px; height: 16px;
+      flex-shrink: 0;
+      accent-color: var(--primary);
+    }
+    .checkbox-item.checked {
+      border-color: var(--primary);
+      background: #eff6ff;
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    /* ── Info box ── */
+    .info-box {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 0.81rem;
+      color: #0369a1;
+      margin-top: 16px;
+      line-height: 1.6;
+    }
+
+    /* ── Pre-defined box ── */
+    .predefined-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-top: 14px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.75;
+      max-height: 220px;
+      overflow-y: auto;
+      white-space: pre-line;
+    }
+
+    /* ── File upload ── */
+    .file-drop-zone {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 34px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 16px;
+    }
+    .file-drop-zone:hover, .file-drop-zone.dragover {
+      border-color: var(--primary-light);
+      background: #f0f9ff;
+    }
+    .file-drop-zone .drop-icon { font-size: 2.2rem; }
+    .file-drop-zone strong { display: block; margin-top: 8px; font-size: 0.95rem; }
+    .file-drop-zone p { color: var(--text-muted); font-size: 0.82rem; margin-top: 4px; }
+
+    .file-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+    .file-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.84rem;
+      flex-wrap: wrap;
+    }
+    .file-item .file-icon { font-size: 1.25rem; }
+    .file-item .file-name { font-weight: 600; flex: 0 0 auto; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .file-item .file-size { color: var(--text-muted); font-size: 0.76rem; flex-shrink: 0; }
+    .file-item .file-desc {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 0.81rem;
+      color: var(--text-muted);
+      padding: 0;
+      min-width: 120px;
+      outline: none;
+    }
+    .file-item .file-desc:focus { color: var(--text); }
+
+    /* ── Priority numbered inputs ── */
+    .prio-num {
+      font-size: 0.8rem;
+      min-width: 22px;
+      color: var(--accent);
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .divider { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
+
+    /* ── Generate button ── */
+    .generate-wrap {
+      margin-top: 28px;
+      text-align: center;
+    }
+    .btn-generate {
+      background: linear-gradient(135deg, var(--accent) 0%, #c94923 100%);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 18px 56px;
+      font-size: 1.08rem;
+      font-weight: 800;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      box-shadow: 0 4px 24px rgba(232,86,42,0.42);
+      transition: all 0.2s;
+    }
+    .btn-generate:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(232,86,42,0.52); }
+    .btn-generate:active { transform: translateY(0); }
+
+    /* ── Output ── */
+    .output-section {
+      margin-top: 24px;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .output-header {
+      padding: 16px 20px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .output-header h3 { font-size: 1rem; font-weight: 700; }
+    .output-actions { display: flex; gap: 8px; }
+    .btn-action {
+      background: rgba(255,255,255,0.18);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.38);
+      border-radius: 8px;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 0.83rem;
+      font-weight: 600;
+      transition: all 0.15s;
+    }
+    .btn-action:hover { background: rgba(255,255,255,0.28); }
+    .btn-action.copied { background: var(--success); border-color: var(--success); }
+
+    .output-text {
+      padding: 22px;
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 0.81rem;
+      line-height: 1.75;
+      white-space: pre-wrap;
+      color: var(--text);
+      max-height: 620px;
+      overflow-y: auto;
+      background: #fafbfc;
+    }
+
+    .hidden { display: none !important; }
+
+    /* ── Section icon colors ── */
+    .s-role .section-icon    { background: #fef3c7; }
+    .s-obj .section-icon     { background: #dcfce7; }
+    .s-ctx .section-icon     { background: #dbeafe; }
+    .s-data .section-icon    { background: #f3e8ff; }
+    .s-const .section-icon   { background: #fee2e2; }
+    .s-prio .section-icon    { background: #ffedd5; }
+    .s-steps .section-icon   { background: #cffafe; }
+    .s-out .section-icon     { background: #d1fae5; }
+    .s-avoid .section-icon   { background: #fce7f3; }
+    .s-files .section-icon   { background: #e0e7ff; }
+
+    /* ── Char counter ── */
+    .char-hint { font-size: 0.73rem; color: var(--text-muted); text-align: right; margin-top: 3px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="badge">Diplomado Trade Marketing · Generador de Prompts IA</div>
+  <h1>Context Prompt Builder</h1>
+  <p class="subtitle">Completa cada sección para generar tu prompt estructurado y dárselo a una IA</p>
+</header>
+
+<main>
+<div class="accordion" id="accordion">
+
+  <!-- ════════════════════════ ROLE ════════════════════════ -->
+  <div class="section-card open s-role">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-icon">🎭</div>
+      <div class="section-title">
+        <h3>ROLE · Rol del Consultor</h3>
+        <p>Define la especialización que asumirá la IA</p>
+      </div>
+      <span class="section-chevron">▾</span>
+    </div>
+    <div class="section-body">
+      <div class="form-group">
+        <label>Selecciona la(s) especialización(es) <span class="optional">— puedes elegir varias</span></label>
+        <div class="role-grid">
+          <div class="role-card selected" data-role="Trade Marketing" onclick="toggleRole(this)">
+            <span class="role-emoji">🏪</span>Trade Marketing
+          </div>
+          <div class="role-card" data-role="Shopper Marketing" onclick="toggleRole(this)">
+            <span class="role-emoji">🛒</span>Shopper Marketing
+          </div>
+          <div class="role-card" data-role="Retail Marketing" onclick="toggleRole(this)">
+            <span class="role-emoji">🏬</span>Retail Marketing
+          </div>
+          <div class="role-card" data-role="Omnicanalidad" onclick="toggleRole(this)">
+            <span class="role-emoji">🔄</span>Omnicanalidad
+          </div>
+          <div class="role-card" data-role="Category Management" onclick="toggleRole(this)">
+            <span class="role-emoji">📊</span>Category Management
+          </div>
+          <div class="role-card" data-role="Customer Experience" onclick="toggleRole(this)">
+            <span class="role-emoji">⭐</span>Customer Experience
+          </div>
+          <div class="role-card" data-role="Activaciones BTL" onclick="toggleRole(this)">
+            <span class="role-emoji">🎪</span>Activaciones BTL
+          </div>
+          <div class="role-card" data-role="Marketing Digital" onclick="toggleRole(this)">
+            <span class="role-emoji">💻</span>Marketing Digital
+          </div>
+          <div class="role-card" data-role="Analítica Comercial" onclick="toggleRole(this)">
+            <span class="role-emoji">📈</span>Analítica Comercial
+          </div>
+        </div>
+      </div>
+      <div class="info-box">
+        El prompt incluirá automáticamente el enfoque estratégico, comercial, financiero y operativo, así como las perspectivas de fabricante, retailer, shopper, fuerza comercial y dirección financiera.
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════ OBJECTIVE ════════════════════════ -->
+  <div class="section-card s-obj">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-icon">🎯</div>
+      <div class="section-title">
+        <h3>OBJECTIVE · Objetivo</h3>
+        <p>Producto, marca, categoría y KPIs esperados</p>
+      </div>
+      <span class="section-chevron">▾</span>
+    </div>
+    <div class="section-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Producto / Marca</label>
+          <input type="text" id="obj-product" placeholder="Ej: Agua Crystal 600ml">
+        </div>
+        <div class="form-group">
+          <label>Categoría</label>
+          <input type="text" id="obj-category" placeholder="Ej: Bebidas hidratantes">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Objetivo principal</label>
+        <textarea id="obj-main" rows="2" placeholder="Ej: Incrementar participación de mercado en canal moderno 5% durante Q2 2025"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Objetivos secundarios</label>
+        <div class="dynamic-list" id="list-obj-secondary">
+          <div class="dynamic-item">
+            <input type="text" placeholder="Objetivo secundario 1">
+            <button class="btn-remove" onclick="removeDynamic(this)">×</button>
+          </div>
+          <div class="dynamic-item">
+            <input type="text" placeholder="Objetivo secundario 2">
+            <button class="btn-remove" onclick="removeDynamic(this)">×</button>
+          </div>
+        </div>
+        <button class="btn-add" onclick="addDynamic('list-obj-secondary','Objetivo secundario')">+ Agregar objetivo</button>
+      </div>
+      <hr class="divider">
+      <div class="form-group">
+        <label>KPIs Esperados</label>
+        <div class="kpi-grid">
+          <div class="form-group">
+            <label>Incremento Sell Out</label>
+            <input type="text" id="kpi-sellout" placeholder="Ej: 15%">
+          </div>
+          <div class="form-group">
+            <label>Incremento Sell In</label>
+            <input type="text" id="kpi-sellin" placeholder="Ej: 20%">
+          </div>
+          <div class="form-group">
+            <label>Rotación esperada</label>
+            <input type="text" id="kpi-rotation" placeholder="Ej: 2.5 veces/mes">
+          </div>
+          <div class="form-group">
+            <label>Participación de exhibición</label>
+            <input type="text" id="kpi-exhibition" placeholder="Ej: 30% del lineal">
+          </div>
+          <div class="form-group">
+            <label>ROI esperado</label>
+            <input type="text" id="kpi-roi" placeholder="Ej: 2.5x">
+          </div>
+          <div class="form-group">
+            <label>Ticket promedio esperado</label>
+            <input type="text" id="kpi-ticket" placeholder="Ej: $25.000 COP">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════ CONTEXT ════════════════════════ -->
+  <div class="section-card s-ctx">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-icon">🌍</div>
+      <div class="section-title">
+        <h3>CONTEXT · Contexto del Mercado</h3>
+        <p>Marca, producto, competidores, canales y temporalidad</p>
+      </div>
+      <span class="section-chevron">▾</span>
+    </div>
+    <div class="section-body">
+      <div class="form-group">
+        <label>Descripción de la marca</label>
+        <textarea id="ctx-brand" rows="2" placeholder="Historia, posicionamiento, valores, promesa de marca..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Descripción del producto</label>
+        <textarea id="ctx-product" rows="2" placeholder="Características, beneficios, propuesta de valor, diferenciadores..."></textarea>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Problema actual</label>
+          <textarea id="ctx-problem" rows="3" placeholder="Desafío o dolor del negocio que se quiere resolver..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Oportunidad detectada</label>
+          <textarea id="ctx-opportunity" rows="3" placeholder="Gap de mercado o palanca de crecimiento identificada..."></textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Tipo de mercado</label>
+        <div class="pills-wrap" id="market-pills">
+          <div class="pill selected" onclick="togglePill(this)">Masivo</div>
+          <div class="pill" onclick="togglePill(this)">Premium</div>
+          <div class="pill" onclick="togglePill(this)">Impulso</div>
+          <div class="pill" onclick="togglePill(this)">Conveniencia</div>
+          <div class="pill" onclick="togglePill(this)">Especializado</div>
+          <div class="pill" onclick="togglePill(this)">B2B</div>
+          <div class="pill" onclick="togglePill(this)">Otro</div>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Perfil del shopper</label>
+          <textarea id="ctx-shopper" rows="3" placeholder="Edad, género, NSE, misión de compra, frecuencia..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Comportamiento del consumidor</label>
+          <textarea id="ctx-consumer" rows="3" placeholder="Hábitos, motivadores, barreras, momento de verdad..."></textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Principales competidores</label>
+        <div class="dynamic-list" id="list-competitors">
+          <div class="dynamic-item">
+            <input type="text" placeholder="Competidor 1">
+            <button class="btn-remove" onclick="removeDynamic(this)">×</button>
+          </div>
+          <div class="dynamic-item">
+            <input type="text" placeholder="Competidor 2">
+            <button class="btn-remove" onclick="removeDynamic(this)">×</button>
+          </div>
+          <div class="dynamic-item">
+            <input type="text" placeholder="Competidor 3">
+            <button class="btn-remove" onclick="removeDynamic(this)">×</button>
+          </div>
+        </div>
+        <button class="btn-add" onclick="addDynamic('list-competitors','Competidor')">+ Agregar competidor</button>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Ventajas competitivas</label>
+          <textarea id="ctx-strengths" rows="3" placeholder="Diferenciadores clave frente a la competencia..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Debilidades actuales</label>
+          <textarea id="ctx-weaknesses" rows="3" placeholder="Áreas de mejora, vulnerabilidades, brechas..."></textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Canales involucrados</label>
+        <div class="checkbox-grid" id="channels-grid">
+          <label class="checkbox-item checked" onclick="toggleCheck(this)">
+            <input type="checkbox" checked> Retail Moderno
+          </label>
+          <label class="checkbox-item" onclick="toggleCheck(this)">
+            <input type="checkbox"> Tradicional
+          </label>
+          <label class="checkbox-item" onclick="toggleCheck(this)">
+            <input type="checkbox"> Ecommerce
+          </label>
+          <label class="checkbox-item" onclick="toggleCheck(this)">
+            <input type="checkbox"> Marketplace
+          </label>
+          <label class="checkbox-item" onclick="toggleCheck(this)">
+            <input type="checkbox"> Canal Directo
+          </label>
+          <label class="checkbox-item" onclick="toggleCheck(this)">
+            <input type="checkbox"> HORECA
+          </label>
+          <label class="checkbox-item" onclick="toggleCheck(this)">
+            <input type="checkbox"> Distribuidores
+          </label>
+        </div>
+        <div class="dynamic-item" style="margin-top:10px">
+          <input type="text" id="channel-other" placeholder="Otro canal (especificar)">
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>País / Región</label>
+          <input type="text" id="ctx-region" placeholder="Ej: Colombia · Bogotá y Medellín">
+        </div>
+        <div class="form-group">
+          <label>Estacionalidad</label>
+          <input type="text" id="ctx-seasonality" placeholder="Ej: Temporada de calor — Dic a Feb">
+        </div>
+        <div class="form-group">
+          <label>Temporada promocional</label>
+          <input type="text" id="ctx-promo-season" placeholder="Ej: Día de la Madre — Mayo">
+        </div>
+        <div class="form-group">
+          <label>Fecha de ejecución</label>
+          <input type="text" id="ctx-exec-date" placeholder="Ej: Abril — Junio 2025">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════ DATA ════════════════════════ -->
+  <div class="section-card s-data">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-icon">📊</div>
+      <div class="section-title">
+        <h3>DATA · Datos e Indicadores</h3>
+        <p>SKUs, precios, márgenes, presupuestos y capacidades</p>
+      </div>
+      <span class="section-chevron">▾</span>
+    </div>
+    <div class="section-body">
+      <div class="form-group">
+        <label>SKUs involucrados</label>
+        <div class="dynamic-list" id="list-skus">
+          <div class="dynamic-item">
+            <input type="text" placeholder="SKU 1: nombre, código, presentación">
+            <button class="btn-remove" onclick="removeDynamic(this)">×</button>
+          </div>
+          <div class="dynamic-item">
+            <input type="text" placeholder="SKU 2: nombre, código, presentación">
+            <button class="btn-remove" onclick="removeDynamic(this)">×</button>
+          </div>
+        </div>
+        <button class="btn-add" onclick="addDynamic('list-skus','SKU')">+ Agregar SKU</button>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Precio de venta al público (PVP)</label>
+          <input type="text" id="data-pvp" placeholder="Ej: $3.500 COP">
+        </div>
+        <div class="form-group">
+          <label>Margen del canal</label>
+          <input type="text" id="data-margin-channel" placeholder="Ej: 28%">
+        </div>
+        <div class="form-group">
+          <label>Margen de la marca</label>
+          <input type="text" id="data-margin-brand" placeholder="Ej: 42%">
+        </div>
+        <div class="form-group">
+          <label>Sell In histórico</label>
+          <input type="text" id="data-sellin" placeholder="Ej: 120.000 unidades/mes">
+        </div>
+        <div class="form-group">
+          <label>Sell Out histórico</label>
+          <input type="text" id="data-sellout" placeholder="Ej: 95.000 unidades/mes">
+        </div>
+        <div class="form-group">
+          <label>Inventario disponible</label>
+          <input type="text" id="data-inventory" placeholder="Ej: 45 días de stock">
+        </div>
+        <div class="form-group">
+          <label>Distribución numérica</label>
+          <input type="text" id="data-dist-num" placeholder="Ej: 65%">
+        </div>
+        <div class="form-group">
+          <label>Distribución ponderada</label>
+          <input type="text" id="data-dist-pond" placeholder="Ej: 78%">
+        </div>
+        <div class="form-group">
+          <label>Cobertura geográfica</label>
+          <input type="text" id="data-coverage" placeholder="Ej: 12 ciudades principales">
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Presupuesto POP</label>
+          <input type="text" id="data-budget-pop" placeholder="Ej: $50M COP">
+        </div>
+        <div class="form-group">
+          <label>Presupuesto Ads</label>
+          <input type="text" id="data-budget-ads" placeholder="Ej: $80M COP">
+        </div>
+        <div class="form-group">
+          <label>Presupuesto de impulso</label>
+          <input type="text" id="data-budget-push" placeholder="Ej: $30M COP">
+        </div>
+        <div class="form-group">
+          <label>Presupuesto total</label>
+          <input type="text" id="data-budget-total" placeholder="Ej: $200M COP">
+        </div>
+        <div class="form-group">
+          <label>Tiempo de ejecución</label>
+          <input type="text" id="data-timeframe" placeholder="Ej: 3 meses">
+        </div>
+        <div class="form-group">
+          <label>Equipo disponible</label>
+          <input type="text" id="data-team" placeholder="Ej: 2 KAMs, 15 impulsadoras">
+        </div>
+        <div class="form-group">
+          <label>Capacidad logística</label>
+          <input type="text" id="data-logistics" placeholder="Ej: Despacho cada 3 días">
+        </div>
+        <div class="form-group">
+          <label>Capacidad de producción</label>
+          <input type="text" id="data-production" placeholder="Ej: 200.000 unidades/semana">
+        </div>
+        <div class="form-group">
+          <label>Capacidad digital</label>
+          <input type="text" id="data-digital" placeholder="Ej: E-commerce propio + Rappi + Amazon">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════ CONSTRAINTS ════════════════════════ -->
+  <div class="section-card s-const">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-icon">⚠️</div>
+      <div class="section-title">
+        <h3>CONSTRAINTS · Restricciones</h3>
+        <p>Limitaciones del proyecto, legales, operativas y del retailer</p>
+      </div>
+      <span class="section-chevron">▾</span>
+    </div>
+    <div class="section-body">
+      <div class="form-group">
+        <label>Restricciones del proyecto</label>
+        <div class="dynamic-list" id="list-const-project">
+          <div class="dynamic-item">
+            <input type="text" placeholder="Restricción 1">
+            <button class="btn-remove" onclick="removeDynamic(this)">×</button>
+          </div>
+          <div class="dynamic-item">
+            <input type="text" placeholder="Restricción 2">
+            <button class="btn-remove" onclick="removeDynamic(this)">×</button>
+          </div>
+        </div>
+        <button class="btn-add" onclick="addDynamic('list-const-project','Restricción')">+ Agregar restricción</button>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Restricciones legales</label>
+          <textarea id="const-legal" rows="3" placeholder="Regulaciones, normativas, permisos requeridos..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Restricciones operativas</label>
+          <textarea id="const-ops" rows="3" placeholder="Limitaciones de procesos, infraestructura, personal..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Restricciones presupuestales</label>
+          <textarea id="const-budget" rows="3" placeholder="Techo de inversión, restricciones financieras..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Restricciones del retailer</label>
+          <textarea id="const-retailer" rows="3" placeholder="Políticas del canal, cuotas de espacio, acuerdos..."></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════ PRIORITIES ════════════════════════ -->
+  <div class="section-card s-prio">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-icon">🏆</div>
+      <div class="section-title">
+        <h3>PRIORITIES · Prioridades</h3>
+        <p>Estratégicas, comerciales, financieras y del shopper</p>
+      </div>
+      <span class="section-chevron">▾</span>
+    </div>
+    <div class="section-body">
+      <div class="form-grid">
+        <div>
+          <div class="form-group">
+            <label>Prioridades estratégicas</label>
+            <div class="dynamic-list" id="list-prio-strategic">
+              <div class="dynamic-item"><span class="prio-num">1.</span><input type="text" placeholder="Prioridad estratégica 1"><button class="btn-remove" onclick="removeDynamic(this)">×</button></div>
+              <div class="dynamic-item"><span class="prio-num">2.</span><input type="text" placeholder="Prioridad estratégica 2"><button class="btn-remove" onclick="removeDynamic(this)">×</button></div>
+              <div class="dynamic-item"><span class="prio-num">3.</span><input type="text" placeholder="Prioridad estratégica 3"><button class="btn-remove" onclick="removeDynamic(this)">×</button></div>
+            </div>
+            <button class="btn-add" onclick="addDynamic('list-prio-strategic','Prioridad estratégica')">+ Agregar</button>
+          </div>
+          <div class="form-group">
+            <label>Prioridades financieras</label>
+            <div class="dynamic-list" id="list-prio-financial">
+              <div class="dynamic-item"><span class="prio-num">1.</span><input type="text" placeholder="Prioridad financiera 1"><button class="btn-remove" onclick="removeDynamic(this)">×</button></div>
+              <div class="dynamic-item"><span class="prio-num">2.</span><input type="text" placeholder="Prioridad financiera 2"><button class="btn-remove" onclick="removeDynamic(this)">×</button></div>
+            </div>
+            <button class="btn-add" onclick="addDynamic('list-prio-financial','Prioridad financiera')">+ Agregar</button>
+          </div>
+        </div>
+        <div>
+          <div class="form-group">
+            <label>Prioridades comerciales</label>
+            <div class="dynamic-list" id="list-prio-commercial">
+              <div class="dynamic-item"><span class="prio-num">1.</span><input type="text" placeholder="Prioridad comercial 1"><button class="btn-remove" onclick="removeDynamic(this)">×</button></div>
+              <div class="dynamic-item"><span class="prio-num">2.</span><input type="text" placeholder="Prioridad comercial 2"><button class="btn-remove" onclick="removeDynamic(this)">×</button></div>
+            </div>
+            <button class="btn-add" onclick="addDynamic('list-prio-commercial','Prioridad comercial')">+ Agregar</button>
+          </div>
+          <div class="form-group">
+            <label>Prioridades del shopper</label>
+            <div class="dynamic-list" id="list-prio-shopper">
+              <div class="dynamic-item"><span class="prio-num">1.</span><input type="text" placeholder="Prioridad shopper 1"><button class="btn-remove" onclick="removeDynamic(this)">×</button></div>
+              <div class="dynamic-item"><span class="prio-num">2.</span><input type="text" placeholder="Prioridad shopper 2"><button class="btn-remove" onclick="removeDynamic(this)">×</button></div>
+            </div>
+            <button class="btn-add" onclick="addDynamic('list-prio-shopper','Prioridad shopper')">+ Agregar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════ STEPS ════════════════════════ -->
+  <div class="section-card s-steps">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-icon">📋</div>
+      <div class="section-title">
+        <h3>STEPS · Pasos de Análisis</h3>
+        <p>Proceso metodológico predefinido (editable)</p>
+      </div>
+      <span class="section-chevron">▾</span>
+    </div>
+    <div class="section-body">
+      <div class="info-box">Los pasos de análisis están predefinidos en la metodología del diplomado. Puedes editarlos si tu caso lo requiere.</div>
+      <div class="form-group">
+        <textarea id="steps-custom" rows="15" style="font-family: monospace; font-size: 0.82rem;">1. Analizar contexto comercial y competitivo
+2. Detectar oportunidades de crecimiento
+3. Identificar riesgos
+4. Proponer estrategia omnicanal
+5. Diseñar tácticas por canal
+6. Proponer estrategia POP
+7. Proponer estrategia digital
+8. Proponer estrategia promocional
+9. Estimar impacto financiero
+10. Estimar ROI
+11. Definir KPIs
+12. Diseñar cronograma de implementación
+13. Proponer sistema de medición y seguimiento
+14. Entregar conclusiones estratégicas</textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════ OUTPUT FORMAT ════════════════════════ -->
+  <div class="section-card s-out">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-icon">📄</div>
+      <div class="section-title">
+        <h3>OUTPUT FORMAT · Formato de Respuesta</h3>
+        <p>Estructura del entregable que debe generar la IA</p>
+      </div>
+      <span class="section-chevron">▾</span>
+    </div>
+    <div class="section-body">
+      <div class="info-box">El formato de salida está estandarizado para el diplomado e incluye todos los entregables requeridos.</div>
+      <div class="predefined-box">1. Resumen ejecutivo
+2. Diagnóstico del problema
+3. Insights del shopper
+4. Análisis competitivo
+5. Estrategia general
+6. Estrategia por canal
+7. Estrategia POP
+8. Estrategia digital
+9. Estrategia promocional
+10. Plan táctico
+11. Cronograma
+12. Presupuesto estimado
+13. KPIs sugeridos
+14. Riesgos
+15. Recomendaciones finales
+
+Usar: tablas · bullet points · lenguaje ejecutivo · pensamiento estratégico · enfoque accionable</div>
+      <div class="form-group">
+        <label>Requisitos adicionales de formato <span class="optional">(opcional)</span></label>
+        <textarea id="output-extra" rows="2" placeholder="Ej: incluir análisis PESTEL, matriz BCG, árbol de problemas, etc."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════ AVOID ════════════════════════ -->
+  <div class="section-card s-avoid">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-icon">🚫</div>
+      <div class="section-title">
+        <h3>AVOID · Qué Evitar</h3>
+        <p>Comportamientos que la IA debe evitar</p>
+      </div>
+      <span class="section-chevron">▾</span>
+    </div>
+    <div class="section-body">
+      <div class="predefined-box">Evitar:
+- respuestas genéricas
+- conceptos teóricos vacíos
+- tácticas imposibles
+- recomendaciones sin ROI
+- ideas no alineadas al shopper
+- estrategias desalineadas al canal
+- respuestas excesivamente largas
+- lenguaje ambiguo
+- repetir información innecesaria
+- asumir datos no entregados
+
+Si falta información importante:
+- identificar vacíos
+- solicitar datos adicionales
+- explicar cómo esos datos impactan la estrategia</div>
+      <div class="form-group">
+        <label>Restricciones adicionales <span class="optional">(opcional)</span></label>
+        <textarea id="avoid-extra" rows="2" placeholder="Ej: no proponer estrategias digitales, no incluir canales internacionales, etc."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════ FILES ════════════════════════ -->
+  <div class="section-card s-files">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-icon">📎</div>
+      <div class="section-title">
+        <h3>ARCHIVOS ADJUNTOS</h3>
+        <p>PDFs, hojas de cálculo y metadatos de soporte</p>
+      </div>
+      <span class="section-chevron">▾</span>
+    </div>
+    <div class="section-body">
+      <div class="file-drop-zone" id="file-drop-zone" onclick="document.getElementById('file-input').click()">
+        <div class="drop-icon">📁</div>
+        <strong>Haz clic o arrastra archivos aquí</strong>
+        <p>PDF, Excel (.xlsx / .xls), CSV — máx. 10 archivos</p>
+      </div>
+      <input type="file" id="file-input" multiple accept=".pdf,.xlsx,.xls,.csv" style="display:none" onchange="handleFiles(this.files)">
+      <div class="file-list" id="file-list"></div>
+      <div class="info-box">Los nombres y descripciones de los archivos se incluirán en el prompt para que la IA sepa qué información de soporte tienes disponible.</div>
+    </div>
+  </div>
+
+</div><!-- /accordion -->
+
+<!-- Generate button -->
+<div class="generate-wrap">
+  <button class="btn-generate" onclick="generatePrompt()">
+    ✨ Generar Context Prompt
+  </button>
+</div>
+
+<!-- Output -->
+<div class="output-section hidden" id="output-section">
+  <div class="output-header">
+    <h3>📋 Tu Context Prompt Generado</h3>
+    <div class="output-actions">
+      <button class="btn-action" id="copy-btn" onclick="copyPrompt()">📋 Copiar prompt</button>
+    </div>
+  </div>
+  <div class="output-text" id="output-text"></div>
+</div>
+
+</main>
+
+<script>
+/* ── Accordion ── */
+function toggleSection(header) {
+  header.closest('.section-card').classList.toggle('open');
+}
+
+/* ── Role cards (multi-select) ── */
+function toggleRole(card) {
+  card.classList.toggle('selected');
+}
+
+/* ── Market type pills (multi-select) ── */
+function togglePill(pill) {
+  pill.classList.toggle('selected');
+}
+
+/* ── Checkbox items ── */
+function toggleCheck(label) {
+  const cb = label.querySelector('input[type="checkbox"]');
+  setTimeout(() => {
+    label.classList.toggle('checked', cb.checked);
+  }, 0);
+}
+
+/* ── Dynamic lists ── */
+function addDynamic(listId, placeholder) {
+  const list = document.getElementById(listId);
+  const n = list.querySelectorAll('.dynamic-item').length + 1;
+  const div = document.createElement('div');
+  div.className = 'dynamic-item';
+
+  const hasPrioNum = listId.startsWith('list-prio-');
+  div.innerHTML = (hasPrioNum ? `<span class="prio-num">${n}.</span>` : '') +
+    `<input type="text" placeholder="${placeholder} ${n}">` +
+    `<button class="btn-remove" onclick="removeDynamic(this)">×</button>`;
+  list.appendChild(div);
+}
+
+function removeDynamic(btn) {
+  const item = btn.closest('.dynamic-item');
+  const list = item.parentElement;
+  if (list.children.length > 1) item.remove();
+  else item.querySelector('input').value = '';
+}
+
+/* ── File handling ── */
+let attachedFiles = [];
+
+function handleFiles(fileList) {
+  Array.from(fileList).forEach(file => {
+    if (attachedFiles.length >= 10) return;
+    if (!attachedFiles.find(f => f.name === file.name)) {
+      attachedFiles.push({ name: file.name, size: file.size, type: file.type, description: '' });
+    }
+  });
+  renderFileList();
+}
+
+function renderFileList() {
+  const list = document.getElementById('file-list');
+  list.innerHTML = '';
+  attachedFiles.forEach((file, i) => {
+    const ext = file.name.split('.').pop().toLowerCase();
+    const icon = ext === 'pdf' ? '📄' : (ext === 'xlsx' || ext === 'xls') ? '📊' : '📋';
+    const size = file.size < 1024 ? file.size + ' B'
+               : file.size < 1048576 ? (file.size/1024).toFixed(0) + ' KB'
+               : (file.size/1048576).toFixed(1) + ' MB';
+    const div = document.createElement('div');
+    div.className = 'file-item';
+    div.innerHTML =
+      `<span class="file-icon">${icon}</span>` +
+      `<span class="file-name" title="${file.name}">${file.name}</span>` +
+      `<span class="file-size">${size}</span>` +
+      `<input class="file-desc" type="text" placeholder="Descripción del contenido" value="${file.description}" oninput="attachedFiles[${i}].description=this.value">` +
+      `<button class="btn-remove" onclick="removeFile(${i})" style="flex-shrink:0">×</button>`;
+    list.appendChild(div);
+  });
+}
+
+function removeFile(index) {
+  attachedFiles.splice(index, 1);
+  renderFileList();
+}
+
+const dropZone = document.getElementById('file-drop-zone');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
+
+/* ── Helpers ── */
+function getListValues(listId) {
+  return Array.from(document.getElementById(listId).querySelectorAll('input'))
+    .map(i => i.value.trim()).filter(Boolean);
+}
+function getCheckedChannels() {
+  const channels = [];
+  document.querySelectorAll('#channels-grid .checkbox-item').forEach(label => {
+    if (label.querySelector('input').checked) channels.push(label.textContent.trim());
+  });
+  const other = v('channel-other');
+  if (other) channels.push(other);
+  return channels;
+}
+function getSelectedRoles() {
+  return Array.from(document.querySelectorAll('.role-card.selected')).map(c => c.dataset.role);
+}
+function getSelectedMarkets() {
+  return Array.from(document.querySelectorAll('#market-pills .pill.selected')).map(p => p.textContent.trim());
+}
+function v(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+function fv(val, fallback = '[Sin especificar]') { return val || fallback; }
+function listItems(arr, prefix = '- ') {
+  return arr.length ? arr.map(x => prefix + x).join('\n') : prefix + '[Sin especificar]';
+}
+function numberedList(arr) {
+  return arr.length ? arr.map((x, i) => `${i+1}. ${x}`).join('\n') : '1. [Sin especificar]';
+}
+
+/* ── Generate prompt ── */
+function generatePrompt() {
+  const roles    = getSelectedRoles();
+  const markets  = getSelectedMarkets();
+  const channels = getCheckedChannels();
+
+  const secondaryObj      = getListValues('list-obj-secondary');
+  const competitors       = getListValues('list-competitors');
+  const projectConstraints = getListValues('list-const-project');
+  const skus              = getListValues('list-skus');
+  const strategicPrios    = getListValues('list-prio-strategic');
+  const commercialPrios   = getListValues('list-prio-commercial');
+  const financialPrios    = getListValues('list-prio-financial');
+  const shopperPrios      = getListValues('list-prio-shopper');
+
+  const roleSpec = roles.length ? roles.map(r => `- ${r}`).join('\n') : '- Trade Marketing';
+
+  const skuLines = skus.length
+    ? skus.map((s, i) => `- SKU ${i+1}: ${s}`).join('\n')
+    : '- [Sin especificar]';
+
+  const filesBlock = attachedFiles.length
+    ? `\n\n--------------------------------------------------\n\n[ARCHIVOS ADJUNTOS]\n\n` +
+      attachedFiles.map(f => {
+        const sz = f.size < 1048576 ? (f.size/1024).toFixed(0) + ' KB' : (f.size/1048576).toFixed(1) + ' MB';
+        return `- ${f.name} (${sz})${f.description ? ' — ' + f.description : ''}`;
+      }).join('\n') +
+      `\n\nNota: Los archivos listados contienen información de soporte. Analiza su contenido según corresponda a cada sección del análisis.`
+    : '';
+
+  const outputExtra = v('output-extra');
+  const avoidExtra  = v('avoid-extra');
+  const stepsText   = v('steps-custom');
+
+  const prompt =
+`[ROLE]
+
+Actúa como un consultor senior especializado en:
+${roleSpec}
+
+Tu enfoque debe ser:
+- estratégico
+- comercial
+- financiero
+- operativo
+- centrado en el shopper y el canal
+
+Debes pensar como:
+- fabricante
+- retailer
+- shopper
+- fuerza comercial
+- director financiero
+- gerente de marca
+
+--------------------------------------------------
+
+[OBJECTIVE]
+
+Desarrollar una estrategia integral de Trade Marketing para:
+
+Producto / Marca:
+${fv(v('obj-product'))}
+
+Categoría:
+${fv(v('obj-category'))}
+
+Objetivo principal:
+${fv(v('obj-main'))}
+
+Objetivos secundarios:
+${listItems(secondaryObj)}
+
+KPIs esperados:
+- Incremento Sell Out: ${fv(v('kpi-sellout'))}
+- Incremento Sell In: ${fv(v('kpi-sellin'))}
+- Rotación esperada: ${fv(v('kpi-rotation'))}
+- Participación de exhibición: ${fv(v('kpi-exhibition'))}
+- ROI esperado: ${fv(v('kpi-roi'))}
+- Ticket promedio esperado: ${fv(v('kpi-ticket'))}
+
+--------------------------------------------------
+
+[CONTEXT]
+
+Descripción de la marca:
+${fv(v('ctx-brand'))}
+
+Descripción del producto:
+${fv(v('ctx-product'))}
+
+Problema actual:
+${fv(v('ctx-problem'))}
+
+Oportunidad detectada:
+${fv(v('ctx-opportunity'))}
+
+Tipo de mercado:
+${markets.length ? markets.join(' / ') : '[Sin especificar]'}
+
+Perfil del shopper:
+${fv(v('ctx-shopper'))}
+
+Comportamiento del consumidor:
+${fv(v('ctx-consumer'))}
+
+Principales competidores:
+${listItems(competitors)}
+
+Ventajas competitivas:
+${fv(v('ctx-strengths'))}
+
+Debilidades actuales:
+${fv(v('ctx-weaknesses'))}
+
+Canales involucrados:
+${listItems(channels)}
+
+País / Región:
+${fv(v('ctx-region'))}
+
+Temporalidad:
+- Estacionalidad: ${fv(v('ctx-seasonality'))}
+- Temporada promocional: ${fv(v('ctx-promo-season'))}
+- Fecha de ejecución: ${fv(v('ctx-exec-date'))}
+
+--------------------------------------------------
+
+[DATA]
+
+SKUs involucrados:
+${skuLines}
+
+Precio de venta al público:
+${fv(v('data-pvp'))}
+
+Margen del canal:
+${fv(v('data-margin-channel'))}
+
+Margen de la marca:
+${fv(v('data-margin-brand'))}
+
+Sell In histórico:
+${fv(v('data-sellin'))}
+
+Sell Out histórico:
+${fv(v('data-sellout'))}
+
+Inventario disponible:
+${fv(v('data-inventory'))}
+
+Distribución numérica:
+${fv(v('data-dist-num'))}
+
+Distribución ponderada:
+${fv(v('data-dist-pond'))}
+
+Cobertura geográfica:
+${fv(v('data-coverage'))}
+
+Presupuesto POP:
+${fv(v('data-budget-pop'))}
+
+Presupuesto Ads:
+${fv(v('data-budget-ads'))}
+
+Presupuesto de impulso:
+${fv(v('data-budget-push'))}
+
+Presupuesto total:
+${fv(v('data-budget-total'))}
+
+Tiempo de ejecución:
+${fv(v('data-timeframe'))}
+
+Equipo disponible:
+${fv(v('data-team'))}
+
+Capacidad logística:
+${fv(v('data-logistics'))}
+
+Capacidad de producción:
+${fv(v('data-production'))}
+
+Capacidad digital:
+${fv(v('data-digital'))}
+
+--------------------------------------------------
+
+[CONSTRAINTS]
+
+Restricciones del proyecto:
+${listItems(projectConstraints)}
+
+Restricciones legales:
+${fv(v('const-legal'))}
+
+Restricciones operativas:
+${fv(v('const-ops'))}
+
+Restricciones presupuestales:
+${fv(v('const-budget'))}
+
+Restricciones del retailer:
+${fv(v('const-retailer'))}
+
+No proponer:
+- estrategias imposibles de ejecutar
+- presupuestos irreales
+- tácticas fuera del contexto del canal
+- ideas sin retorno financiero
+
+--------------------------------------------------
+
+[PRIORITIES]
+
+Prioridades estratégicas:
+${numberedList(strategicPrios)}
+
+Prioridades comerciales:
+${numberedList(commercialPrios)}
+
+Prioridades financieras:
+${numberedList(financialPrios)}
+
+Prioridades del shopper:
+${numberedList(shopperPrios)}
+
+--------------------------------------------------
+
+[STEPS]
+
+${stepsText}
+
+--------------------------------------------------
+
+[OUTPUT FORMAT]
+
+Entregar respuesta en el siguiente formato:
+
+1. Resumen ejecutivo
+2. Diagnóstico del problema
+3. Insights del shopper
+4. Análisis competitivo
+5. Estrategia general
+6. Estrategia por canal
+7. Estrategia POP
+8. Estrategia digital
+9. Estrategia promocional
+10. Plan táctico
+11. Cronograma
+12. Presupuesto estimado
+13. KPIs sugeridos
+14. Riesgos
+15. Recomendaciones finales${outputExtra ? '\n\nRequisitos adicionales de formato:\n' + outputExtra : ''}
+
+Usar:
+- tablas
+- bullet points
+- lenguaje ejecutivo
+- pensamiento estratégico
+- enfoque accionable
+
+--------------------------------------------------
+
+[AVOID]
+
+Evitar:
+- respuestas genéricas
+- conceptos teóricos vacíos
+- tácticas imposibles
+- recomendaciones sin ROI
+- ideas no alineadas al shopper
+- estrategias desalineadas al canal
+- respuestas excesivamente largas
+- lenguaje ambiguo
+- repetir información innecesaria
+- asumir datos no entregados${avoidExtra ? '\n- ' + avoidExtra : ''}
+
+Si falta información importante:
+- identificar vacíos
+- solicitar datos adicionales
+- explicar cómo esos datos impactan la estrategia${filesBlock}`;
+
+  const outputSection = document.getElementById('output-section');
+  document.getElementById('output-text').textContent = prompt;
+  outputSection.classList.remove('hidden');
+  setTimeout(() => outputSection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+}
+
+/* ── Copy ── */
+function copyPrompt() {
+  const text = document.getElementById('output-text').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-btn');
+    const orig = btn.textContent;
+    btn.textContent = '✓ ¡Copiado!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2200);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = '✓ ¡Copiado!';
+    setTimeout(() => btn.textContent = '📋 Copiar prompt', 2200);
+  });
+}
+</script>
+</body>
+</html>
