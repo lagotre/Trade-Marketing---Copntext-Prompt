@@ -1062,28 +1062,31 @@
       <div class="section-icon">🚫</div>
       <div class="section-title">
         <h3>AVOID · Qué Evitar</h3>
-        <p>Comportamientos que la IA debe evitar</p>
+        <p>Selecciona los comportamientos que la IA debe evitar</p>
       </div>
       <span class="section-chevron">▾</span>
     </div>
     <div class="section-body">
-      <div class="predefined-box">Evitar:
-- respuestas genéricas
-- conceptos teóricos vacíos
-- tácticas imposibles
-- recomendaciones sin ROI
-- ideas no alineadas al shopper
-- estrategias desalineadas al canal
-- respuestas excesivamente largas
-- lenguaje ambiguo
-- repetir información innecesaria
-- asumir datos no entregados
-
-Si falta información importante:
-- identificar vacíos
-- solicitar datos adicionales
-- explicar cómo esos datos impactan la estrategia</div>
-      <div class="form-group">
+      <div class="info-box">Selecciona uno o varios elementos. Por defecto están todos activos.</div>
+      <div class="checklist-actions">
+        <button class="btn-select-all" onclick="selectAll('avoid-checklist')">Seleccionar todos</button>
+        <button class="btn-select-none" onclick="selectNone('avoid-checklist')">Limpiar selección</button>
+      </div>
+      <div class="checklist" id="avoid-checklist">
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">🚫</span>Respuestas genéricas</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">🚫</span>Conceptos teóricos vacíos</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">🚫</span>Tácticas imposibles de ejecutar</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">🚫</span>Recomendaciones sin ROI</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">🚫</span>Ideas no alineadas al shopper</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">🚫</span>Estrategias desalineadas al canal</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">🚫</span>Respuestas excesivamente largas</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">🚫</span>Lenguaje ambiguo</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">🚫</span>Repetir información innecesaria</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">🚫</span>Asumir datos no entregados</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">🚫</span>Identificar vacíos y solicitar datos faltantes</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">🚫</span>Explicar cómo los datos faltantes impactan la estrategia</div>
+      </div>
+      <div class="form-group" style="margin-top:14px">
         <label>Restricciones adicionales <span class="optional">(opcional)</span></label>
         <textarea id="avoid-extra" rows="2" placeholder="Ej: no proponer estrategias digitales, no incluir canales internacionales, etc."></textarea>
       </div>
@@ -1310,6 +1313,7 @@ function generatePrompt() {
 
   const outputExtra  = v('output-extra');
   const avoidExtra   = v('avoid-extra');
+  const selectedAvoid = getChecklistValues('avoid-checklist');
   const selectedSteps  = getChecklistValues('steps-checklist');
   const selectedOutput = getChecklistValues('output-checklist');
 
@@ -1541,21 +1545,7 @@ Usar:
 [AVOID]
 
 Evitar:
-- respuestas genéricas
-- conceptos teóricos vacíos
-- tácticas imposibles
-- recomendaciones sin ROI
-- ideas no alineadas al shopper
-- estrategias desalineadas al canal
-- respuestas excesivamente largas
-- lenguaje ambiguo
-- repetir información innecesaria
-- asumir datos no entregados${avoidExtra ? '\n- ' + avoidExtra : ''}
-
-Si falta información importante:
-- identificar vacíos
-- solicitar datos adicionales
-- explicar cómo esos datos impactan la estrategia${filesBlock}`;
+${selectedAvoid.length ? selectedAvoid.map(a => `- ${a}`).join('\n') : '- [Sin restricciones seleccionadas]'}${avoidExtra ? '\n- ' + avoidExtra : ''}${filesBlock}`;
 
   const outputSection = document.getElementById('output-section');
   document.getElementById('output-text').textContent = prompt;
