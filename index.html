@@ -300,6 +300,66 @@
       line-height: 1.6;
     }
 
+    /* ── Multi-select checklist ── */
+    .checklist {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 14px;
+    }
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      user-select: none;
+    }
+    .checklist-item:hover { border-color: var(--primary-light); background: #f8fafc; color: var(--text); }
+    .checklist-item.checked {
+      border-color: var(--primary);
+      background: #eff6ff;
+      color: var(--primary);
+      font-weight: 600;
+    }
+    .checklist-item .item-num {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent);
+      min-width: 22px;
+      flex-shrink: 0;
+    }
+    .checklist-item.checked .item-num { color: var(--primary); }
+    .checklist-item input[type="checkbox"] {
+      width: 16px; height: 16px;
+      flex-shrink: 0;
+      accent-color: var(--primary);
+      pointer-events: none;
+    }
+    .checklist-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .btn-select-all, .btn-select-none {
+      background: none;
+      border: 1.5px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 6px;
+      padding: 5px 12px;
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-weight: 600;
+      transition: all 0.15s;
+    }
+    .btn-select-all:hover { border-color: var(--primary); color: var(--primary); background: #eff6ff; }
+    .btn-select-none:hover { border-color: #ef4444; color: #ef4444; background: #fef2f2; }
+
     /* ── Pre-defined box ── */
     .predefined-box {
       background: #f8fafc;
@@ -927,27 +987,31 @@
       <div class="section-icon">📋</div>
       <div class="section-title">
         <h3>STEPS · Pasos de Análisis</h3>
-        <p>Proceso metodológico predefinido (editable)</p>
+        <p>Selecciona los pasos que debe seguir la IA</p>
       </div>
       <span class="section-chevron">▾</span>
     </div>
     <div class="section-body">
-      <div class="info-box">Los pasos de análisis están predefinidos en la metodología del diplomado. Puedes editarlos si tu caso lo requiere.</div>
-      <div class="form-group">
-        <textarea id="steps-custom" rows="15" style="font-family: monospace; font-size: 0.82rem;">1. Analizar contexto comercial y competitivo
-2. Detectar oportunidades de crecimiento
-3. Identificar riesgos
-4. Proponer estrategia omnicanal
-5. Diseñar tácticas por canal
-6. Proponer estrategia POP
-7. Proponer estrategia digital
-8. Proponer estrategia promocional
-9. Estimar impacto financiero
-10. Estimar ROI
-11. Definir KPIs
-12. Diseñar cronograma de implementación
-13. Proponer sistema de medición y seguimiento
-14. Entregar conclusiones estratégicas</textarea>
+      <div class="info-box">Selecciona uno o varios pasos según el alcance de tu caso. Por defecto están todos activos.</div>
+      <div class="checklist-actions">
+        <button class="btn-select-all" onclick="selectAll('steps-checklist')">Seleccionar todos</button>
+        <button class="btn-select-none" onclick="selectNone('steps-checklist')">Limpiar selección</button>
+      </div>
+      <div class="checklist" id="steps-checklist">
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">1.</span>Analizar contexto comercial y competitivo</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">2.</span>Detectar oportunidades de crecimiento</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">3.</span>Identificar riesgos</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">4.</span>Proponer estrategia omnicanal</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">5.</span>Diseñar tácticas por canal</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">6.</span>Proponer estrategia POP</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">7.</span>Proponer estrategia digital</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">8.</span>Proponer estrategia promocional</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">9.</span>Estimar impacto financiero</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">10.</span>Estimar ROI</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">11.</span>Definir KPIs</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">12.</span>Diseñar cronograma de implementación</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">13.</span>Proponer sistema de medición y seguimiento</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">14.</span>Entregar conclusiones estratégicas</div>
       </div>
     </div>
   </div>
@@ -958,32 +1022,36 @@
       <div class="section-icon">📄</div>
       <div class="section-title">
         <h3>OUTPUT FORMAT · Formato de Respuesta</h3>
-        <p>Estructura del entregable que debe generar la IA</p>
+        <p>Selecciona los entregables que debe incluir la IA</p>
       </div>
       <span class="section-chevron">▾</span>
     </div>
     <div class="section-body">
-      <div class="info-box">El formato de salida está estandarizado para el diplomado e incluye todos los entregables requeridos.</div>
-      <div class="predefined-box">1. Resumen ejecutivo
-2. Diagnóstico del problema
-3. Insights del shopper
-4. Análisis competitivo
-5. Estrategia general
-6. Estrategia por canal
-7. Estrategia POP
-8. Estrategia digital
-9. Estrategia promocional
-10. Plan táctico
-11. Cronograma
-12. Presupuesto estimado
-13. KPIs sugeridos
-14. Riesgos
-15. Recomendaciones finales
-
-Usar: tablas · bullet points · lenguaje ejecutivo · pensamiento estratégico · enfoque accionable</div>
-      <div class="form-group">
-        <label>Requisitos adicionales de formato <span class="optional">(opcional)</span></label>
-        <textarea id="output-extra" rows="2" placeholder="Ej: incluir análisis PESTEL, matriz BCG, árbol de problemas, etc."></textarea>
+      <div class="info-box">Selecciona uno o varios entregables según el alcance de tu caso. Por defecto están todos activos.</div>
+      <div class="checklist-actions">
+        <button class="btn-select-all" onclick="selectAll('output-checklist')">Seleccionar todos</button>
+        <button class="btn-select-none" onclick="selectNone('output-checklist')">Limpiar selección</button>
+      </div>
+      <div class="checklist" id="output-checklist">
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">1.</span>Resumen ejecutivo</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">2.</span>Diagnóstico del problema</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">3.</span>Insights del shopper</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">4.</span>Análisis competitivo</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">5.</span>Estrategia general</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">6.</span>Estrategia por canal</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">7.</span>Estrategia POP</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">8.</span>Estrategia digital</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">9.</span>Estrategia promocional</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">10.</span>Plan táctico</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">11.</span>Cronograma</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">12.</span>Presupuesto estimado</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">13.</span>KPIs sugeridos</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">14.</span>Riesgos</div>
+        <div class="checklist-item checked" onclick="toggleChecklist(this)"><input type="checkbox" checked><span class="item-num">15.</span>Recomendaciones finales</div>
+      </div>
+      <div class="form-group" style="margin-top:14px">
+        <label>Entregables adicionales <span class="optional">(opcional)</span></label>
+        <textarea id="output-extra" rows="2" placeholder="Ej: análisis PESTEL, matriz BCG, árbol de problemas, mapa de empatía, etc."></textarea>
       </div>
     </div>
   </div>
@@ -1082,12 +1150,38 @@ function togglePill(pill) {
   pill.classList.toggle('selected');
 }
 
-/* ── Checkbox items ── */
+/* ── Checkbox items (channels) ── */
 function toggleCheck(label) {
   const cb = label.querySelector('input[type="checkbox"]');
   setTimeout(() => {
     label.classList.toggle('checked', cb.checked);
   }, 0);
+}
+
+/* ── Checklist items (steps / output format) ── */
+function toggleChecklist(item) {
+  const cb = item.querySelector('input[type="checkbox"]');
+  cb.checked = !cb.checked;
+  item.classList.toggle('checked', cb.checked);
+}
+
+function selectAll(listId) {
+  document.querySelectorAll(`#${listId} .checklist-item`).forEach(item => {
+    item.querySelector('input[type="checkbox"]').checked = true;
+    item.classList.add('checked');
+  });
+}
+
+function selectNone(listId) {
+  document.querySelectorAll(`#${listId} .checklist-item`).forEach(item => {
+    item.querySelector('input[type="checkbox"]').checked = false;
+    item.classList.remove('checked');
+  });
+}
+
+function getChecklistValues(listId) {
+  return Array.from(document.querySelectorAll(`#${listId} .checklist-item.checked`))
+    .map(item => item.textContent.trim());
 }
 
 /* ── Dynamic lists ── */
@@ -1214,9 +1308,18 @@ function generatePrompt() {
       `\n\nNota: Los archivos listados contienen información de soporte. Analiza su contenido según corresponda a cada sección del análisis.`
     : '';
 
-  const outputExtra = v('output-extra');
-  const avoidExtra  = v('avoid-extra');
-  const stepsText   = v('steps-custom');
+  const outputExtra  = v('output-extra');
+  const avoidExtra   = v('avoid-extra');
+  const selectedSteps  = getChecklistValues('steps-checklist');
+  const selectedOutput = getChecklistValues('output-checklist');
+
+  const stepsText = selectedSteps.length
+    ? selectedSteps.map((s, i) => `${i + 1}. ${s}`).join('\n')
+    : '[Sin pasos seleccionados]';
+
+  const outputList = selectedOutput.length
+    ? selectedOutput.map((o, i) => `${i + 1}. ${o}`).join('\n')
+    : '[Sin entregables seleccionados]';
 
   const prompt =
 `[ROLE]
@@ -1424,21 +1527,7 @@ ${stepsText}
 
 Entregar respuesta en el siguiente formato:
 
-1. Resumen ejecutivo
-2. Diagnóstico del problema
-3. Insights del shopper
-4. Análisis competitivo
-5. Estrategia general
-6. Estrategia por canal
-7. Estrategia POP
-8. Estrategia digital
-9. Estrategia promocional
-10. Plan táctico
-11. Cronograma
-12. Presupuesto estimado
-13. KPIs sugeridos
-14. Riesgos
-15. Recomendaciones finales${outputExtra ? '\n\nRequisitos adicionales de formato:\n' + outputExtra : ''}
+${outputList}${outputExtra ? '\n\nEntregables adicionales:\n' + outputExtra : ''}
 
 Usar:
 - tablas
